@@ -7,26 +7,31 @@ board = [
 O_player = None
 X_player = None
 
+turn = 0
+
 #=========================================================================
 #=========================================================================
 #=========================================================================
 
 class player():
     
-    def __init__(self, name, action, score, tick_board):
+    def __init__(self, name, action, score, tick, b):
         self.name = name
         self.action = action
         self.score = score
-        self.tick_board = tick_board
-    
-    def get_name():
-        pass
-        
-    def score():
-        pass
+        self.tick = tick
+        self.b = b
+
+    def add_score():
+        self.score += 1
         
     def add_tick():
-        pass
+        if mousePressed == True:
+            for y in range(len(board)):
+                for x in range(len(board[y])):
+                    x1, y1, w1, h1 = self.b[y][x].value()
+                    if (mouseX > x1 and mouseY > y1) and (mouseX < x1 + w1 and mouseY < y1 + h1):
+                        return x1, y1
         
     def show_profile():
         pass
@@ -64,17 +69,8 @@ class button():
 #=========================================================================
 #=========================================================================
         
-class tick_box():
-    
-    def __init__(self):
-        pass
-        
-#=========================================================================
-#=========================================================================
-#=========================================================================
-        
 def start_scene():
-    background(0)
+    pass
     
 #=========================================================================
 #=========================================================================
@@ -86,9 +82,38 @@ def end_scene():
 #=========================================================================
 #=========================================================================
 #=========================================================================
+
+def draw_board(b, f):
+    background(12,76,100)
+    textFont(f)
+    textSize(32)
+    text("Tic-Tac-Toe", 242, 70)
+    for y in range(len(board)):
+        for x in range(len(board[y])):
+            b[y][x].show()
+   
+    
+#=========================================================================
+#=========================================================================
+#=========================================================================
+
+class draw_box():
+    
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
         
-def tick():
-    pass
+    def show(self):
+        noFill()
+        stroke(234,234,235)
+        strokeWeight(4)
+        rect(self.x, self.y, self.w, self.h)
+        
+        
+    def value(self):
+        return self.x, self.y, self.w, self.h
     
 #=========================================================================
 #=========================================================================
@@ -109,10 +134,32 @@ def score():
 #=========================================================================
     
 def setup():
+    
+    global mono, X_tick, O_tick
+    
     size(700, 500)
+
+    #load files
+    mono = loadFont("OCRAExtended-48.vlw")
+    X_tick = loadImage("tick_X.png")
+    O_tick = loadImage("tick_O.png")
+
+
+    #board setup
+    box_y = 100
+    box_size = 100
+    
+    for i in range(3):
+        box_x = 200
+        for j in range(3):
+            board[i].append(draw_box(box_x, box_y, box_size, box_size))
+            box_x += box_size
+        box_y += box_size
+            
+    print(board)
     
 def draw():
-    pass
+    draw_board(board, mono)
     
 #=========================================================================
 #=========================================================================
