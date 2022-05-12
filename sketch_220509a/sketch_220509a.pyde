@@ -99,16 +99,19 @@ def draw_board(b, f):
 
 class draw_box():
     
-    def __init__(self, x, y, w, h):
+    def __init__(self, x, y, w, h, tick):
         self.x = x
         self.y = y
         self.w = w
         self.h = h
+        self.tick = tick
         
     def show(self):
         noFill()
         stroke(234,234,235)
         strokeWeight(4)
+        if self.tick != 0:
+            image(self.tick, self.x, self.y)
         rect(self.x, self.y, self.w, self.h)
         
         
@@ -152,7 +155,7 @@ def setup():
     for i in range(3):
         box_x = 200
         for j in range(3):
-            board[i].append(draw_box(box_x, box_y, box_size, box_size))
+            board[i].append(draw_box(box_x, box_y, box_size, box_size, X_tick))
             box_x += box_size
         box_y += box_size
             
