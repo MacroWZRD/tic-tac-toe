@@ -174,16 +174,10 @@ def setup():
 def draw():
     global gameon, starton, playon, endon, board, turn, cd
     
-    if starton == True:
-        start_scene()
-        if mousePressed == True:
-            starton = False
-            playon = True
-            cd = 100
+    playon = True
     
     if playon == True:
         play_scene(board)
-        
         if check_win() == True and cd < 0:
             turn = 1
             board = reset_board()
@@ -197,17 +191,19 @@ def draw():
 def mouseClicked():
     global turn, cd
     
-    if check_win() == None and playon == True and cd < 0:
+    if check_win() == None and playon == True:
         if turn % 2 != 0:
             tick = X_tick
             c = add_tick(tick, mouseX, mouseY)
             cd = 200
-            
+
         elif turn % 2 == 0:
             tick = O_tick
             c = add_tick(tick, mouseX, mouseY)
             cd = 200
-        
+                
         turn += c
+        
+    
     
     
