@@ -9,8 +9,11 @@ cd = 0
 
 gameon = True
 starton = True
+settingon = False
+helpon = False
 playon = False
 endon = False
+exiton = False
 
 #=========================================================================
 #=========================================================================
@@ -43,6 +46,7 @@ class cell():
     def show(self):
         rect(self.x, self.y, self.s, self.s)
         if self.tick != 0:
+            self.tick.resize(100,100)
             image(self.tick, self.x, self.y)
         
     def tick_update(self, new_tick):
@@ -170,8 +174,27 @@ def play_scene(b):
     
     score = str(player1.value()[1]) + " : " + str(player2.value()[1])
     textSize(48)
-    text(score, 290, 470)
+    text(score, 292.5, 470)
     
+    textSize(24)
+    text("TIC-TAC-TOE", 267.5, 60)
+    
+    textSize(14)
+    
+    if turn % 2 != 0:
+        fill(255,69,0)
+        text("PLAYERX", 210, 460)
+        fill(234,234,235)
+        text("PLAYERO", 420, 460)
+        
+    elif turn % 2 == 0:
+        fill(255,69,0)
+        text("PLAYERO", 420, 460)
+        fill(234,234,235)
+        text("PLAYERX", 210, 460)
+        
+    noFill()  
+        
     for y in range(len(b)):
         for x in range(len(b[y])):
             b[y][x].show()
@@ -181,25 +204,42 @@ def play_scene(b):
 #=========================================================================
 
 def start_scene():
-    background(0)
+    background(12,76,100)
+    
+#=========================================================================
+#=========================================================================
+#=========================================================================
+
+def setting_scene():
+    background(12,76,100)
+    
+#=========================================================================
+#=========================================================================
+#=========================================================================
+
+def help_scene():
+    background(12,76,100)
     
 #=========================================================================
 #=========================================================================
 #=========================================================================
     
 def end_scene():
-    pass
+    background(12,76,100)
+    image(trophy, 265, 230)
     
 #=========================================================================
 #=========================================================================
 #=========================================================================
     
 def setup():
-    global X_tick, O_tick
+    global X_tick, O_tick, trophy
     
     size(700, 500)
     frameRate(120)
     
+    trophy = loadImage("trophy.png")
+    trophy.resize(170,177)
     X_tick = loadImage("tick_X.png")
     X_tick.resize(100,100)
     O_tick = loadImage("tick_O.png")
@@ -225,7 +265,8 @@ def setup():
 def draw():
     global gameon, starton, playon, endon, board, turn, cd
     
-    playon = True
+    # playon = True
+    endon = True
     
     if playon == True:
         
@@ -251,8 +292,13 @@ def draw():
             board = reset_board()
             
         cd -= 1 
+        
+    if endon == True:
+        end_scene()
     
-    
+    if exiton == True:
+        exit()
+        
 #=========================================================================
 #=========================================================================
 #=========================================================================
