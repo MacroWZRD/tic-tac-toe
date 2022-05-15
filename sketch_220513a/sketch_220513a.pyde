@@ -57,12 +57,42 @@ class cell():
     
     def get_tick(self):
         return self.tick
+    
+#=========================================================================
+#=========================================================================
+#=========================================================================
+    
+class button():
+    
+    def __init__(self, img, action, x, y, w, h, state):
+        self.img = img
+        self.action = action
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.state = state
+        
+    def show(self):
+        
+        tint(255)
+        image(self.img, self.x, self.y)
+        
+    def clicked(self):
+        if (mouseX > self.x and mouseY > self.y) and (mouseX < self.x + self.w and mouseY < self.y + self.h):
+            tint(200)
+            image(self.img, self.x, self.y)
+            if mousePressed == True and self.state == False:
+                return self.action
+            
+        return None
         
 #=========================================================================
 #=========================================================================
 #=========================================================================
 
 def add_tick(tick, mx, my):
+    v = False
     for y in range(len(board)):
         for x in range(len(board[y])):
             bx, by, bs = board[y][x].value()
@@ -95,6 +125,20 @@ def check_win():
 #=========================================================================
 #=========================================================================
 
+def check_tie():
+    occupied = 0
+    for y in range(len(board)):
+        for x in range(len(board[y])):  
+            if board[y][x].get_tick() != 0:
+                occupied += 1
+                
+    if occupied == 9:
+        return True
+        
+#=========================================================================
+#=========================================================================
+#=========================================================================
+
 def reset_board():
     
     b = [
@@ -112,6 +156,7 @@ def reset_board():
         box_y += 103
     
     return b
+
 #=========================================================================
 #=========================================================================
 #=========================================================================
@@ -122,6 +167,10 @@ def play_scene(b):
     stroke(234,234,235)
     strokeWeight(4)
     noFill()
+    
+    score = str(player1.value()[1]) + " : " + str(player2.value()[1])
+    textSize(48)
+    text(score, 290, 470)
     
     for y in range(len(b)):
         for x in range(len(b[y])):
@@ -156,6 +205,8 @@ def setup():
     O_tick = loadImage("tick_O.png")
     O_tick.resize(100,100)
     
+    global player1, player2
+    
     player1 = player("bot1", 0, X_tick)
     player2 = player("bot2", 0, O_tick)
     
@@ -177,10 +228,28 @@ def draw():
     playon = True
     
     if playon == True:
+        
         play_scene(board)
         if check_win() == True and cd < 0:
+            
+            if turn % 2 == 0:
+                player1.add_score()
+                
+            elif turn % 2 != 0:
+                player2.add_score() 
+                
+            print(player1.value()[1])
+            print(player2.value()[1])
+                
+                
             turn = 1
             board = reset_board()
+            
+        if check_tie() == True and cd < 0:
+            
+            turn = 1
+            board = reset_board()
+            
         cd -= 1 
     
     
