@@ -19,6 +19,7 @@ helpon = False
 playon = False
 endon = False
 
+num = [1,2,3,4,5,6,7,8,9]
 st = False
 
 #=========================================================================
@@ -267,7 +268,7 @@ def start_scene():
     
     setting = button("settings", "settings", 100, 260, 200, 50, st)
     setting.show()
-    setting.clicked()
+    action_manager(setting.clicked())
     
     quit = button("quit", "quit", 100, 330, 200, 50, st)
     quit.show()
@@ -279,6 +280,22 @@ def start_scene():
 
 def setting_scene():
     background(12,76,100)
+    textAlign(LEFT)
+    
+    fill(255)
+    textSize(24)
+    text("settings:", 75, 100)
+    
+    textSize(18)    
+    strokeWeight(2)
+    text("number of games", 90, 150)
+    rect(255, 134, 32, 18)
+    text("(max: 9)", 300, 150)
+    
+    fill(0)
+    text(total_score, 265, 150)
+    
+    
     
     menu = button("return", "menu", 50, 420, 120, 50, st)
     menu.show()
@@ -300,7 +317,7 @@ def help_scene():
     text("1. The game is played on a grid that's 3 squares by 3 squares.", 90, 150)
     text("2. You are X, your friend is O. Players take turns putting their" , 90, 190) 
     text("marks in empty squares.", 115, 210)
-    text("3. The first player to get 3 of her marks in a row (up, down,", 90, 250)    
+    text("3. The first player to get 3 of their marks in a row (up, down,", 90, 250)    
     text("across, or diagonally) is the winner.", 115, 270) 
     text("4. When all 9 squares are full, the game is over. If no player", 90, 310)
     text("has 3 marks in a row, the game ends in a tie.", 115, 330)
@@ -350,6 +367,10 @@ def action_manager(action):
     if action == "help":
         starton = False
         helpon = True
+        
+    if action == "settings":
+        starton = False
+        settingon = True
         
     if action == "menu":
         player1.reset_score()
@@ -474,6 +495,15 @@ def mouseClicked():
                 cd = 200
                 
             turn += c
-        
     
+#=========================================================================
+#=========================================================================
+#=========================================================================
+
+def keyPressed():
+    global total_score
     
+    if settingon == True:
+        for k in num:
+            if key == str(k):
+                total_score = k
