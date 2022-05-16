@@ -1,5 +1,7 @@
+#libraries
 import time
 
+#global variables
 board = [
          [],
          [],
@@ -26,49 +28,53 @@ st = False
 #=========================================================================
 #=========================================================================
 
+#player object
 class player():
-    
+    #store object name, score, tick
     def __init__(self, name, score, tick):
         self.name = name
         self.score = score
         self.tick = tick
-
+    #add 1 to player score
     def add_score(self):
         self.score += 1
-        
+    #reset the player score
     def reset_score(self):
         self.score = 0
-        
+    #return the stored object values
     def value(self):
         return self.name, self.score, self.tick
 
 #=========================================================================
 #=========================================================================
 #=========================================================================
+
+#board box object
 class cell():
-    
+    #store x coord, y coord, size, tick
     def __init__(self, x, y, s, tick):
         self.x = x
         self.y = y
         self.s = s
         self.tick = tick
-        
+    #render the box
     def show(self):
         rect(self.x, self.y, self.s, self.s)
         if self.tick != 0:
             self.tick.resize(100,100)
             image(self.tick, self.x, self.y)
-        
+    #add tick to box
     def tick_update(self, new_tick):
+        #check if box is unoccupied
         if self.tick == 0:
             self.tick = new_tick
             return 1
         else:
             return 0
-        
+    #return dimensions of the box
     def value(self):
         return self.x, self.y, self.s
-    
+    #return the tick stored in the box
     def get_tick(self):
         return self.tick
     
@@ -76,8 +82,9 @@ class cell():
 #=========================================================================
 #=========================================================================
     
+#button object
 class button():
-    
+    #store object text, action, x coord, y coord, widht, height, state
     def __init__(self, txt, action, x, y, w, h, state):
         self.txt = txt
         self.action = action
@@ -86,9 +93,8 @@ class button():
         self.w = w
         self.h = h
         self.state = state
-        
+    #render the button and text
     def show(self):
-
         noFill()
         textSize(24)
         stroke(234,234,235)
@@ -98,12 +104,12 @@ class button():
         rect(self.x, self.y, self.w, self.h, 5)
         fill(255)
         text(self.txt,self.x + (self.w/2), self.y + (self.h / 2) + 7.5)
-        
+    #check if the button is clicked and return an action    
     def clicked(self):
         if (mouseX > self.x and mouseY > self.y) and (mouseX < self.x + self.w and mouseY < self.y + self.h):
             fill(255, 30)
             noStroke()
-            
+            #hover effect for button
             rect(self.x, self.y, self.w, self.h, 5)
 
             if mousePressed == True and self.state == False:
@@ -115,6 +121,7 @@ class button():
 #=========================================================================
 #=========================================================================
 
+#create a list to store animation frames from the "animation" folder
 def init_animation():
     maxframe = 26
     framelist = []
@@ -130,6 +137,7 @@ def init_animation():
 #=========================================================================
 #=========================================================================
 
+#render the frames stored inside a list containing frames
 def render_frame(f_list):
     
     # elapsed = (time.time() + 0.0) % 1.3 
@@ -142,11 +150,15 @@ def render_frame(f_list):
 #=========================================================================
 #=========================================================================
 
+#add a tick to the board
 def add_tick(tick, mx, my):
     v = False
+    #iterate through the board
     for y in range(len(board)):
         for x in range(len(board[y])):
+            #store box coords and dimensions
             bx, by, bs = board[y][x].value()
+            #check if mouse is within the box
             if (mx > bx  and my > by) and (mx < bx + bs and my < by + bs): 
                 v = board[y][x].tick_update(tick)
                 break
@@ -155,17 +167,19 @@ def add_tick(tick, mx, my):
 #=========================================================================
 #=========================================================================
 
+#check if a player has won
 def check_win():
+    #check rows
     for y in range(len(board)):
         if board[y][0].get_tick() != 0:
             if board[y][0].get_tick() == board[y][1].get_tick() and board[y][1].get_tick() == board[y][2].get_tick():
                 return True
-                    
+    #check columns                
     for x in range(len(board[y])):  
         if board[0][x].get_tick() != 0:  
             if board[0][x].get_tick() == board[1][x].get_tick() and board[1][x].get_tick() == board[2][x].get_tick():
                 return True
-            
+    #check diagonals        
     if board[1][1].get_tick() != 0:
         if board[0][2].get_tick() == board[1][1].get_tick() and board[1][1].get_tick() == board[2][0].get_tick():
                 return True
@@ -176,13 +190,14 @@ def check_win():
 #=========================================================================
 #=========================================================================
 
+#check if a tie has occured
 def check_tie():
     occupied = 0
     for y in range(len(board)):
         for x in range(len(board[y])):  
             if board[y][x].get_tick() != 0:
                 occupied += 1
-                
+    #check if all boxes are occupied            
     if occupied == 9:
         return True
         
@@ -190,6 +205,7 @@ def check_tie():
 #=========================================================================
 #=========================================================================
 
+#reset the values stored in the board
 def reset_board():
     
     b = [
@@ -212,23 +228,27 @@ def reset_board():
 #=========================================================================
 #=========================================================================
 
+#display the play screen
 def play_scene(b):
     background(12,76,100)
     
+    #set default values
     stroke(234,234,235)
     strokeWeight(4)
     noFill()
     textAlign(LEFT)
     
+    #show the current score
     score = str(player1.value()[1]) + " : " + str(player2.value()[1])
     textSize(48)
     text(score, 292.5, 470)
     
+    #show the title
     textSize(24)
     text("TIC-TAC-TOE", 267.5, 60)
     
     textSize(14)
-    
+    #display player's turn with red highlight
     if turn % 2 != 0:
         fill(255,69,0)
         text("PLAYERX", 210, 460)
@@ -242,7 +262,8 @@ def play_scene(b):
         text("PLAYERX", 210, 460)
         
     noFill()  
-        
+    
+    #display the board
     for y in range(len(b)):
         for x in range(len(b[y])):
             b[y][x].show()
@@ -251,25 +272,30 @@ def play_scene(b):
 #=========================================================================
 #=========================================================================
 
+#display the start/welcome screen
 def start_scene():
     global logo
     
     background(12,76,100)
-    
+    #display the logo
     image(logo, 400, 120)
     
+    #create a play button to start the game
     play = button("play", "play", 100, 120, 200, 50, st)
     play.show()
     action_manager(play.clicked())
     
+    #create a help button to open the instructions screen
     help = button("help", "help", 100, 190, 200, 50, st)
     help.show()
     action_manager(help.clicked())
     
+    #create a settings button to change aspects of the game
     setting = button("settings", "settings", 100, 260, 200, 50, st)
     setting.show()
     action_manager(setting.clicked())
     
+    #create a quit button to exit the game
     quit = button("quit", "quit", 100, 330, 200, 50, st)
     quit.show()
     action_manager(quit.clicked())
@@ -278,25 +304,30 @@ def start_scene():
 #=========================================================================
 #=========================================================================
 
+#display settings screen
 def setting_scene():
     background(12,76,100)
-    textAlign(LEFT)
     
+    #set default values
+    textAlign(LEFT)
     fill(255)
+    
+    #show the title
     textSize(24)
     text("settings:", 75, 100)
     
+    #show the options
     textSize(18)    
     strokeWeight(2)
     text("number of games", 90, 150)
     rect(255, 134, 32, 18)
     text("(max: 9)", 300, 150)
     
+    #show the changeable values
     fill(0)
     text(total_score, 265, 150)
     
-    
-    
+    #create a return button that takes the user back to the start screen
     menu = button("return", "menu", 50, 420, 120, 50, st)
     menu.show()
     action_manager(menu.clicked())
@@ -305,14 +336,18 @@ def setting_scene():
 #=========================================================================
 #=========================================================================
 
+#display help screen
 def help_scene():
     background(12,76,100)
+    #set default values
     textAlign(LEFT)
-    
     fill(255)
+    
+    #show title
     textSize(24)
     text("how to play:", 75, 100)
     
+    #show the intructions
     textSize(18)
     text("1. The game is played on a grid that's 3 squares by 3 squares.", 90, 150)
     text("2. You are X, your friend is O. Players take turns putting their" , 90, 190) 
@@ -321,7 +356,8 @@ def help_scene():
     text("across, or diagonally) is the winner.", 115, 270) 
     text("4. When all 9 squares are full, the game is over. If no player", 90, 310)
     text("has 3 marks in a row, the game ends in a tie.", 115, 330)
-        
+    
+    #create a return button that takes the user back to the start screen    
     menu = button("return", "menu", 50, 420, 120, 50, st)
     menu.show()
     action_manager(menu.clicked())
@@ -332,22 +368,28 @@ def help_scene():
     
 def end_scene():
     background(12,76,100)
+    
+    #render the trophy image
     image(trophy, 265, 230)
     
+    #set default values
     fill(255,215,0)
     textSize(32)
     textAlign(CENTER)
-        
+    
+    #render the confetti animation    
     render_frame(win_animation)
     
+    #check if player X or player O won
     if player1.value()[1] == total_score:
         winner = "Player X"
-        
     elif player2.value()[1] == total_score:
         winner = "Player O"
     
+    #show the congratulatory message
     text(winner + " has won!", 350, 150)
     
+    #create a return button that takes the user back to the start screen    
     menu = button("return", "menu", 50, 420, 120, 50, st)
     menu.show()
     action_manager(menu.clicked())
@@ -356,6 +398,7 @@ def end_scene():
 #=========================================================================
 #=========================================================================
 
+#manage button actions
 def action_manager(action):
     global gameon, settingon, helpon, starton, playon, endon, scd
     
@@ -390,9 +433,11 @@ def action_manager(action):
 def setup():
     global X_tick, O_tick, trophy, logo
     
+    #set window propreties
     size(700, 500)
     frameRate(120)
     
+    #initiate image variables
     logo = loadImage("sample_design.png")
     logo.resize(200, 256)
     trophy = loadImage("trophy.png")
@@ -404,13 +449,16 @@ def setup():
     
     global win_animation
     
+    #initiate the animation list
     win_animation = init_animation()
     
     global player1, player2
     
+    #create the players
     player1 = player("bot1", 0, X_tick)
     player2 = player("bot2", 0, O_tick)
     
+    #initiate the board
     box_y = 100
     for i in range(3):
         box_x = 191
@@ -428,51 +476,61 @@ def draw():
     
     global st
     
+    #show start screen
     if starton == True:
         start_scene()
-        
+    
+    #show settings screen
     if settingon == True:
         setting_scene()
-            
+    
+    #show help screen        
     if helpon == True:
         help_scene()
     
+    #show play screen
     if playon == True:
         
+        #check if either player has won
         if player1.value()[1] == total_score or player2.value()[1] == total_score:
             playon = False
             endon = True
         
+        #display the board
         play_scene(board)
+        #check if the player has won a game
         if check_win() == True and cd < 0:
-            
+            #check if x turn
             if turn % 2 == 0:
                 player1.add_score()
-                
+            #check if o turn
             elif turn % 2 != 0:
                 player2.add_score() 
-                
+            #reset values    
             turn = 1
             board = reset_board()
-            
+        #check if tie    
         if check_tie() == True and cd < 0:
-            
+            #reset values
             turn = 1
             board = reset_board()
         
+        #decrease cooldown 
         if cd > -1:    
             cd -= 1 
             
         if scd > -1:
             scd -= 1
             
-        
+    #display end screen    
     if endon == True:
         end_scene()
     
+    #exit the game
     if gameon == False:
         exit()
-        
+    
+    #save mouse state    
     st = mousePressed
         
 #=========================================================================
@@ -482,18 +540,21 @@ def draw():
 def mouseClicked():
     global turn, cd, scd
     
+    #check if game is in progress
     if check_win() == None and playon == True:
+        #start cooldown to avoid unintentional tick placement
         if scd < 0:
+            #check if X turn
             if turn % 2 != 0:
                 tick = X_tick
                 c = add_tick(tick, mouseX, mouseY)
                 cd = 200
-    
+            #check if O turn
             elif turn % 2 == 0:
                 tick = O_tick
                 c = add_tick(tick, mouseX, mouseY)
                 cd = 200
-                
+            #increment turn if tick is added    
             turn += c
     
 #=========================================================================
@@ -503,7 +564,10 @@ def mouseClicked():
 def keyPressed():
     global total_score
     
+    #check if settings screen is on
     if settingon == True:
+        #iterate through a list containing numbers
         for k in num:
+            #set pressed key as win condition
             if key == str(k):
                 total_score = k
